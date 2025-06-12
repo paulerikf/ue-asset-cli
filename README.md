@@ -18,7 +18,7 @@ The CLI provides a list of actions, that you can use:
 
  | Actions | Description |
  |---------|-------------|
- | login   | Login to the Epic Services. This will require an authentication code, which you must get by logging into your account [in your browser](https://www.epicgames.com/id/api/redirect?clientId=34a02cf8f4414e29b15921876da36f9a&responseType=code). The login will be stored in your keyring, so you don't need to enter in every time. |
+| login   | Login to the Epic Services. This will require an authentication code, which you must get by logging into your account [in your browser](https://www.epicgames.com/id/api/redirect?clientId=34a02cf8f4414e29b15921876da36f9a&responseType=code). The login will be stored in your keyring, so you don't need to enter in every time. If you receive a `corrective_action_required` error when logging in, open the Epic Games Store in your browser and accept the EULA for your account. |
  | list    | List the assets and their available Versions. |
  | details | Get the full details, including which Versions work with which Engine Version, for a specific detail. |
  | download | Download a given Asset + Version into a desired Directory on your system. |

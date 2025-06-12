@@ -48,14 +48,30 @@ def _login_with_authentication_code(session: Session, authentication_code: str) 
     }
 
     user_data = session.post(TOKEN_URL, data, auth=(CLIENT_ID, CLIENT_SECRET))
-    user_data.raise_for_status()
 
     if user_data.status_code == 200:
         log.info("Successful login with authentication code")
         return user_data.json()
-    else:
-        log.error("Could not login with Authentication Code")
-        return None
+
+    # Check if the response indicates that the user has not yet accepted
+    # the Epic Games EULA.  Epic recently changed the OAuth flow to return a
+    # 4xx status code with a JSON body that contains the corrective action.
+    try:
+        error_data = user_data.json()
+        if (
+            error_data.get("errorCode") == "errors.com.epicgames.oauth.corrective_action_required"
+            and error_data.get("metadata", {}).get("correctiveAction") == "EULA_ACCEPTANCE"
+        ):
+            log.error(
+                "Login failed: Epic Games EULA must be accepted in your browser before logging in."
+            )
+            log.debug(f"Continuation token: {error_data.get('metadata', {}).get('continuation')}")
+    except Exception:
+        # Ignore errors when parsing the json message
+        pass
+
+    log.error("Could not login with Authentication Code")
+    return None
 
 
 def _verify_authentication_token(session: Session, token: str) -> dict | None:
